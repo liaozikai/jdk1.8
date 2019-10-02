@@ -53,9 +53,9 @@ class StringCoding {
 
     /** The cached coders for each thread */
     private final static ThreadLocal<SoftReference<StringDecoder>> decoder =
-        new ThreadLocal<>();
+            new ThreadLocal<>();
     private final static ThreadLocal<SoftReference<StringEncoder>> encoder =
-        new ThreadLocal<>();
+            new ThreadLocal<>();
 
     private static boolean warnUnsupportedCharset = true;
 
@@ -80,7 +80,7 @@ class StringCoding {
     }
 
     // Trim the given char array to the given length
-    //
+    // 将给定的char数组修剪为给定的长度
     private static char[] safeTrim(char[] ca, int len,
                                    Charset cs, boolean isTrusted) {
         if (len == ca.length && (isTrusted || System.getSecurityManager() == null))
@@ -112,7 +112,7 @@ class StringCoding {
             // System.err since this method may be called during VM
             // initialization before either is available.
             MessageUtils.err("WARNING: Default charset " + csn +
-                             " not supported, using ISO-8859-1 instead");
+                    " not supported, using ISO-8859-1 instead");
             warnUnsupportedCharset = false;
         }
     }
@@ -129,8 +129,8 @@ class StringCoding {
             this.requestedCharsetName = rcn;
             this.cs = cs;
             this.cd = cs.newDecoder()
-                .onMalformedInput(CodingErrorAction.REPLACE)
-                .onUnmappableCharacter(CodingErrorAction.REPLACE);
+                    .onMalformedInput(CodingErrorAction.REPLACE)
+                    .onUnmappableCharacter(CodingErrorAction.REPLACE);
             this.isTrusted = (cs.getClass().getClassLoader0() == null);
         }
 
@@ -174,12 +174,12 @@ class StringCoding {
     }
 
     static char[] decode(String charsetName, byte[] ba, int off, int len)
-        throws UnsupportedEncodingException
+            throws UnsupportedEncodingException
     {
         StringDecoder sd = deref(decoder);
         String csn = (charsetName == null) ? "ISO-8859-1" : charsetName;
         if ((sd == null) || !(csn.equals(sd.requestedCharsetName())
-                              || csn.equals(sd.charsetName()))) {
+                || csn.equals(sd.charsetName()))) {
             sd = null;
             try {
                 Charset cs = lookupCharset(csn);
@@ -223,8 +223,8 @@ class StringCoding {
             }
         }
         cd.onMalformedInput(CodingErrorAction.REPLACE)
-          .onUnmappableCharacter(CodingErrorAction.REPLACE)
-          .reset();
+                .onUnmappableCharacter(CodingErrorAction.REPLACE)
+                .reset();
         if (cd instanceof ArrayDecoder) {
             int clen = ((ArrayDecoder)cd).decode(ba, off, len, ca);
             return safeTrim(ca, clen, cs, isTrusted);
@@ -261,7 +261,7 @@ class StringCoding {
             // If this code is hit during VM initialization, MessageUtils is
             // the only way we will be able to get any kind of error message.
             MessageUtils.err("ISO-8859-1 charset not available: "
-                             + x.toString());
+                    + x.toString());
             // If we can not find ISO-8859-1 (a required encoding) then things
             // are seriously wrong with the installation.
             System.exit(1);
@@ -280,8 +280,8 @@ class StringCoding {
             this.requestedCharsetName = rcn;
             this.cs = cs;
             this.ce = cs.newEncoder()
-                .onMalformedInput(CodingErrorAction.REPLACE)
-                .onUnmappableCharacter(CodingErrorAction.REPLACE);
+                    .onMalformedInput(CodingErrorAction.REPLACE)
+                    .onUnmappableCharacter(CodingErrorAction.REPLACE);
             this.isTrusted = (cs.getClass().getClassLoader0() == null);
         }
 
@@ -325,12 +325,12 @@ class StringCoding {
     }
 
     static byte[] encode(String charsetName, char[] ca, int off, int len)
-        throws UnsupportedEncodingException
+            throws UnsupportedEncodingException
     {
         StringEncoder se = deref(encoder);
         String csn = (charsetName == null) ? "ISO-8859-1" : charsetName;
         if ((se == null) || !(csn.equals(se.requestedCharsetName())
-                              || csn.equals(se.charsetName()))) {
+                || csn.equals(se.charsetName()))) {
             se = null;
             try {
                 Charset cs = lookupCharset(csn);
@@ -358,8 +358,8 @@ class StringCoding {
             }
         }
         ce.onMalformedInput(CodingErrorAction.REPLACE)
-          .onUnmappableCharacter(CodingErrorAction.REPLACE)
-          .reset();
+                .onUnmappableCharacter(CodingErrorAction.REPLACE)
+                .reset();
         if (ce instanceof ArrayEncoder) {
             int blen = ((ArrayEncoder)ce).encode(ca, off, len, ba);
             return safeTrim(ba, blen, cs, isTrusted);
@@ -394,7 +394,7 @@ class StringCoding {
             // If this code is hit during VM initialization, MessageUtils is
             // the only way we will be able to get any kind of error message.
             MessageUtils.err("ISO-8859-1 charset not available: "
-                             + x.toString());
+                    + x.toString());
             // If we can not find ISO-8859-1 (a required encoding) then things
             // are seriously wrong with the installation.
             System.exit(1);

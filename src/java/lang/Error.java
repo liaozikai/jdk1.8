@@ -32,14 +32,20 @@ package java.lang;
  * The {@code ThreadDeath} error, though a "normal" condition,
  * is also a subclass of {@code Error} because most applications
  * should not try to catch it.
+ *  Error是Throwable类的子类，表明合理的应用不应该捕获的严重问题。
+ *  很多错误是异常情况。ThreadDeath错误，尽管是一个正常的情况，
+ *  但它也是Error的子类，绝大数应用不应该捕获它
  * <p>
  * A method is not required to declare in its {@code throws}
  * clause any subclasses of {@code Error} that might be thrown
  * during the execution of the method but not caught, since these
  * errors are abnormal conditions that should never occur.
+ *  方法不被要求声明抛出Error的子类，error可能会在方法执行过程中
+ *  抛出但不被捕获，因为这些错误是异常情况且不应该发生。
  *
  * That is, {@code Error} and its subclasses are regarded as unchecked
  * exceptions for the purposes of compile-time checking of exceptions.
+ *  Error和它的子类被认为是不可检查的异常相对于在编译时期就能检测到的异常而言
  *
  * @author  Frank Yellin
  * @see     java.lang.ThreadDeath
@@ -53,6 +59,8 @@ public class Error extends Throwable {
      * Constructs a new error with {@code null} as its detail message.
      * The cause is not initialized, and may subsequently be initialized by a
      * call to {@link #initCause}.
+     * 用null构造一个新的error作为它的msg。这个cause不被初始化，并且及诶下来
+     * 可能会被initCause方法初始化
      */
     public Error() {
         super();

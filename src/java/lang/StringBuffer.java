@@ -33,12 +33,17 @@ import java.util.Arrays;
  * point in time it contains some particular sequence of characters, but
  * the length and content of the sequence can be changed through certain
  * method calls.
+ * 一个线程安全，可变的字符序列。一个像String一样的字符缓冲，能够被修改。
+ * 任何时刻它包含一些主要的字符序列，但是序列的长度和内容能够通过特定方法调用
+ * 改变。
  * <p>
  * String buffers are safe for use by multiple threads. The methods
  * are synchronized where necessary so that all the operations on any
  * particular instance behave as if they occur in some serial order
  * that is consistent with the order of the method calls made by each of
  * the individual threads involved.
+ * 多线程使用该类是安全的。这些方法在必要时进行同步，以便在任何特定实例上进行的所有操作都表现为
+ * 好像以某种串行顺序进行，该顺序与所涉及的每个单独线程进行的方法调用的顺序一致。
  * <p>
  * The principal operations on a {@code StringBuffer} are the
  * {@code append} and {@code insert} methods, which are
@@ -48,6 +53,9 @@ import java.util.Arrays;
  * {@code append} method always adds these characters at the end
  * of the buffer; the {@code insert} method adds the characters at
  * a specified point.
+ * 该类主要的操作是append和insert方法，这些方法是覆盖齐全的因为所有的
+ * 数据参数都能接收。能够将给定的数据转换为string类型并且添加或者插入这些字符
+ * 到当前字符序列中。append方法主要用于在字符尾部添加，insert主要用于特定点插入。
  * <p>
  * For example, if {@code z} refers to a string buffer object
  * whose current contents are {@code "start"}, then
@@ -72,36 +80,53 @@ import java.util.Arrays;
  * This could be satisfied by the caller holding a lock during the
  * operation's call, by using an immutable source sequence, or by not
  * sharing the source sequence across threads.
+ *  每当发生涉及原序列的操作（例如从原序列增加或插入），这个类同步值发生在
+ *  操作上，而不是类上（也就是只对方法加锁，不对类加锁）
+ *  注意，尽管stringbuffer被设计为多线程下并发安全的类，但是如果构造函数，或append或
+ *  insert操作传递了被线程共享的原序列，这些调用必须确保操作过程中原序列一致不变。
+ *  调用过程中对操作加锁，通过使用不变的字符序列或者不对所有线程共享原序列的方式是
+ *  很不错的。
  * <p>
  * Every string buffer has a capacity. As long as the length of the
  * character sequence contained in the string buffer does not exceed
  * the capacity, it is not necessary to allocate a new internal
  * buffer array. If the internal buffer overflows, it is
  * automatically made larger.
+ *  每一个stringbuffer都有一个容量。只要stringbuffer中字符序列长度没有超出容量，
+ *  就没必要分配一个新的内部字符数组。如果内部字符溢出，自动会分配更大的空间。
  * <p>
  * Unless otherwise noted, passing a {@code null} argument to a constructor
  * or method in this class will cause a {@link NullPointerException} to be
  * thrown.
+ * 除非另有说明，否则传递null参数给构造函数或者方法将会抛出空指针异常。
  * <p>
  * As of  release JDK 5, this class has been supplemented with an equivalent
  * class designed for use by a single thread, {@link StringBuilder}.  The
  * {@code StringBuilder} class should generally be used in preference to
  * this one, as it supports all of the same operations but it is faster, as
  * it performs no synchronization.
+ *  在JDK5中，这个类增加了一个等效类StringBuilder，用于单个线程。
+ *  一般优先使用StringBuilder类，因为支持所有相同操作且更快，不执行同步操作
  *
  * @author      Arthur van Hoff
  * @see     java.lang.StringBuilder
  * @see     java.lang.String
  * @since   JDK1.0
  */
- public final class StringBuffer
-    extends AbstractStringBuilder
-    implements java.io.Serializable, CharSequence
+public final class StringBuffer
+        extends AbstractStringBuilder
+        implements java.io.Serializable, CharSequence
 {
 
     /**
      * A cache of the last value returned by toString. Cleared
      * whenever the StringBuffer is modified.
+     *  只要StringBuffer有被修改，就将该值赋为null
+     *
+     *  （从头到位只在toString()方法看到有使用，而其他方法都是看到要清空它
+     *  因为已经有value[]这个属性了，toStringCache只是用来简单的用在toString方法，
+     *  在反序列化时不需要用到它，故而用transient关键字
+     *  https://www.cnblogs.com/chenpi/p/6185773.html 这里描述地挺好）
      */
     private transient char[] toStringCache;
 
@@ -145,6 +170,8 @@ import java.util.Arrays;
      * as the specified {@code CharSequence}. The initial capacity of
      * the string buffer is {@code 16} plus the length of the
      * {@code CharSequence} argument.
+     *  构造一个string buffer，包含了参数字符串。初始容量是16加上
+     *  参数字符串的长度。
      * <p>
      * If the length of the specified {@code CharSequence} is
      * less than or equal to zero, then an empty buffer of capacity
@@ -542,7 +569,7 @@ import java.util.Arrays;
      */
     @Override
     public synchronized StringBuffer insert(int dstOffset, CharSequence s,
-            int start, int end)
+                                            int start, int end)
     {
         toStringCache = null;
         super.insert(dstOffset, s, start, end);
@@ -673,7 +700,7 @@ import java.util.Arrays;
 
     /**
      * Serializable fields for StringBuffer.
-     *
+     * StringBuffer的可序列化字段
      * @serialField value  char[]
      *              The backing character array of this StringBuffer.
      * @serialField count int
@@ -681,20 +708,22 @@ import java.util.Arrays;
      * @serialField shared  boolean
      *              A flag indicating whether the backing array is shared.
      *              The value is ignored upon deserialization.
+     *              表明该字符数组是否共享的标志，反序列化被忽略
      */
     private static final java.io.ObjectStreamField[] serialPersistentFields =
-    {
-        new java.io.ObjectStreamField("value", char[].class),
-        new java.io.ObjectStreamField("count", Integer.TYPE),
-        new java.io.ObjectStreamField("shared", Boolean.TYPE),
-    };
+            {
+                    new java.io.ObjectStreamField("value", char[].class),
+                    new java.io.ObjectStreamField("count", Integer.TYPE),
+                    new java.io.ObjectStreamField("shared", Boolean.TYPE),
+            };
 
     /**
      * readObject is called to restore the state of the StringBuffer from
      * a stream.
+     * 调用readObject可以从流中恢复StringBuffer的状态。
      */
     private synchronized void writeObject(java.io.ObjectOutputStream s)
-        throws java.io.IOException {
+            throws java.io.IOException {
         java.io.ObjectOutputStream.PutField fields = s.putFields();
         fields.put("value", value);
         fields.put("count", count);
@@ -705,9 +734,10 @@ import java.util.Arrays;
     /**
      * readObject is called to restore the state of the StringBuffer from
      * a stream.
+     * 调用readObject可以从流中恢复StringBuffer的状态。
      */
     private void readObject(java.io.ObjectInputStream s)
-        throws java.io.IOException, ClassNotFoundException {
+            throws java.io.IOException, ClassNotFoundException {
         java.io.ObjectInputStream.GetField fields = s.readFields();
         value = (char[])fields.get("value", null);
         count = fields.get("count", 0);

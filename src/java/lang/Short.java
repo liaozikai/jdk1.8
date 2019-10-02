@@ -45,12 +45,14 @@ public final class Short extends Number implements Comparable<Short> {
     /**
      * A constant holding the minimum value a {@code short} can
      * have, -2<sup>15</sup>.
+     * short型数据拥有的最小值，-2的15次方
      */
     public static final short   MIN_VALUE = -32768;
 
     /**
      * A constant holding the maximum value a {@code short} can
      * have, 2<sup>15</sup>-1.
+     * short型数据拥有的最大值，2的15次方
      */
     public static final short   MAX_VALUE = 32767;
 
@@ -64,7 +66,7 @@ public final class Short extends Number implements Comparable<Short> {
     /**
      * Returns a new {@code String} object representing the
      * specified {@code short}. The radix is assumed to be 10.
-     *
+     *  返回一个short型表示的String对象，进制数默认为10
      * @param s the {@code short} to be converted
      * @return the string representation of the specified {@code short}
      * @see java.lang.Integer#toString(int)
@@ -112,6 +114,7 @@ public final class Short extends Number implements Comparable<Short> {
      *                  argument in the specified radix.
      * @throws          NumberFormatException If the {@code String}
      *                  does not contain a parsable {@code short}.
+     *  中文翻译跟parseByte差不多，不翻译
      */
     public static short parseShort(String s, int radix)
         throws NumberFormatException {
@@ -200,6 +203,7 @@ public final class Short extends Number implements Comparable<Short> {
         return valueOf(s, 10);
     }
 
+    // short的范围虽然在-32768和32767之间，但是仍然定义了一个缓存
     private static class ShortCache {
         private ShortCache(){}
 
@@ -305,7 +309,8 @@ public final class Short extends Number implements Comparable<Short> {
     }
 
     /**
-     * Constructs a newly allocated {@code Short} object that
+     * Construct
+     * s a newly allocated {@code Short} object that
      * represents the {@code short} value indicated by the
      * {@code String} parameter. The string is converted to a
      * {@code short} value in exactly the manner used by the

@@ -72,10 +72,12 @@ package java.lang;
  * @see         java.lang.StringBuffer
  * @see         java.lang.String
  * @since       1.5
+ *
+ * 该类与StringBuffer提供的方法一样，只是该类是非线程安全的。
  */
 public final class StringBuilder
-    extends AbstractStringBuilder
-    implements java.io.Serializable, CharSequence
+        extends AbstractStringBuilder
+        implements java.io.Serializable, CharSequence
 {
 
     /** use serialVersionUID for interoperability */
@@ -279,8 +281,8 @@ public final class StringBuilder
      */
     @Override
     public StringBuilder insert(int offset, Object obj) {
-            super.insert(offset, obj);
-            return this;
+        super.insert(offset, obj);
+        return this;
     }
 
     /**
@@ -306,8 +308,8 @@ public final class StringBuilder
      */
     @Override
     public StringBuilder insert(int dstOffset, CharSequence s) {
-            super.insert(dstOffset, s);
-            return this;
+        super.insert(dstOffset, s);
+        return this;
     }
 
     /**
@@ -419,7 +421,7 @@ public final class StringBuilder
      *             case extra characters are ignored.
      */
     private void writeObject(java.io.ObjectOutputStream s)
-        throws java.io.IOException {
+            throws java.io.IOException {
         s.defaultWriteObject();
         s.writeInt(count);
         s.writeObject(value);
@@ -430,7 +432,7 @@ public final class StringBuilder
      * a stream.
      */
     private void readObject(java.io.ObjectInputStream s)
-        throws java.io.IOException, ClassNotFoundException {
+            throws java.io.IOException, ClassNotFoundException {
         s.defaultReadObject();
         count = s.readInt();
         value = (char[]) s.readObject();

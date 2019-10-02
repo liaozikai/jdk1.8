@@ -46,6 +46,7 @@ import sun.security.util.SecurityConstants;
  * A <i>thread</i> is a thread of execution in a program. The Java
  * Virtual Machine allows an application to have multiple threads of
  * execution running concurrently.
+ *  在一个应用中该类代表一个线程的执行。jvm允许一个应用在并发执行运行时拥有多线程
  * <p>
  * Every thread has a priority. Threads with higher priority are
  * executed in preference to threads with lower priority. Each thread
@@ -54,20 +55,28 @@ import sun.security.util.SecurityConstants;
  * thread has its priority initially set equal to the priority of the
  * creating thread, and is a daemon thread if and only if the
  * creating thread is a daemon.
+ * 每一个线程都有一个优先级。更高优先级的线程比低优先级线程更先执行。每个线程可能会，
+ * 也可能不会被标记为守护线程。当项目运行时创建了一个线程对象，新线程拥有和创建它
+ * 的线程一样的优先级。并且当且仅当创建线程是一个守护线程时，被创建线程也是守护线程。
  * <p>
  * When a Java Virtual Machine starts up, there is usually a single
  * non-daemon thread (which typically calls the method named
  * <code>main</code> of some designated class). The Java Virtual
  * Machine continues to execute threads until either of the following
  * occurs:
+ * 当jvm启动时，经常有一个非守护线程的单线程（一般叫做主线程）。jvm继续执行线程直到
+ * 以下一种情况发生：
  * <ul>
  * <li>The <code>exit</code> method of class <code>Runtime</code> has been
  *     called and the security manager has permitted the exit operation
  *     to take place.
+ *     Runtime类的exit方法被调用并且安全管理器允许exit方法执行
  * <li>All threads that are not daemon threads have died, either by
  *     returning from the call to the <code>run</code> method or by
  *     throwing an exception that propagates beyond the <code>run</code>
  *     method.
+ *     所有非守护线程都死亡了，要么通过从调用返回到run方法，要么抛出传播到run方法
+ *     之外的异常
  * </ul>
  * <p>
  * There are two ways to create a new thread of execution. One is to
@@ -122,14 +131,16 @@ import sun.security.util.SecurityConstants;
  *     new Thread(p).start();
  * </pre></blockquote>
  * <p>
+ *     上面是创建线程的两种方式
  * Every thread has a name for identification purposes. More than
  * one thread may have the same name. If a name is not specified when
  * a thread is created, a new name is generated for it.
- * <p>
+ * <p> 每一个线程都有一个名称以便识别。可能超过一个线程有相同名称。
+ * 当一个线程创建的时候没有定下名称，则会被赋予新的名称。
  * Unless otherwise noted, passing a {@code null} argument to a constructor
  * or method in this class will cause a {@link NullPointerException} to be
  * thrown.
- *
+ * 除非特别注意，传递一个null参数给构造器或者方法可能会造成空指针异常
  * @author  unascribed
  * @see     Runnable
  * @see     Runtime#exit(int)
@@ -140,6 +151,7 @@ import sun.security.util.SecurityConstants;
 public
 class Thread implements Runnable {
     /* Make sure registerNatives is the first thing <clinit> does. */
+    // 确保registerNatives方法是类初始化第一件要做的事情
     private static native void registerNatives();
     static {
         registerNatives();
@@ -151,27 +163,34 @@ class Thread implements Runnable {
     private long           eetop;
 
     /* Whether or not to single_step this thread. */
+    // 是否单步执行此线程
     private boolean     single_step;
 
     /* Whether or not the thread is a daemon thread. */
+    // 该线程是否守护线程
     private boolean     daemon = false;
 
     /* JVM state */
     private boolean     stillborn = false;
 
     /* What will be run. */
+    // 将要运行什么
     private Runnable target;
 
     /* The group of this thread */
+    // 哪个线程组
     private ThreadGroup group;
 
     /* The context ClassLoader for this thread */
+    // 该线程的上下文类加载器
     private ClassLoader contextClassLoader;
 
     /* The inherited AccessControlContext of this thread */
+    // 该线程的内继权限控制上下文
     private AccessControlContext inheritedAccessControlContext;
 
     /* For autonumbering anonymous threads. */
+    // 用于自动编号匿名线程
     private static int threadInitNumber;
     private static synchronized int nextThreadNum() {
         return threadInitNumber++;
@@ -179,11 +198,13 @@ class Thread implements Runnable {
 
     /* ThreadLocal values pertaining to this thread. This map is maintained
      * by the ThreadLocal class. */
+    // 与该线程有关的ThreadLocal的值。该映射由ThreadLocal类维护
     ThreadLocal.ThreadLocalMap threadLocals = null;
 
     /*
      * InheritableThreadLocal values pertaining to this thread. This map is
      * maintained by the InheritableThreadLocal class.
+     * 与该线程有关的内继本地线程值。该映射由InheritableThreadLocal类维护
      */
     ThreadLocal.ThreadLocalMap inheritableThreadLocals = null;
 
@@ -191,11 +212,14 @@ class Thread implements Runnable {
      * The requested stack size for this thread, or 0 if the creator did
      * not specify a stack size.  It is up to the VM to do whatever it
      * likes with this number; some VMs will ignore it.
+     * 该线程的请求栈长度。如果创建者没有指定则返回0.
+     * 由VM决定使用此编号执行任何操作。 一些虚拟机将忽略它
      */
     private long stackSize;
 
     /*
      * JVM-private state that persists after native thread termination.
+     * 在本地线程终止后，jvm私有状态仍然存在
      */
     private long nativeParkEventPointer;
 
@@ -205,15 +229,18 @@ class Thread implements Runnable {
     private long tid;
 
     /* For generating thread ID */
+    // 生成的线程id
     private static long threadSeqNumber;
 
     /* Java thread status for tools,
      * initialized to indicate thread 'not yet started'
+     * java线程状态，初始化表明线程还没有开始
      */
 
     private volatile int threadStatus = 0;
 
 
+    // 该方法是静态并且共享的
     private static synchronized long nextThreadID() {
         return ++threadSeqNumber;
     }
@@ -223,12 +250,16 @@ class Thread implements Runnable {
      * java.util.concurrent.locks.LockSupport.park.
      * Set by (private) java.util.concurrent.locks.LockSupport.setBlocker
      * Accessed using java.util.concurrent.locks.LockSupport.getBlocker
+     * 该参数提供当前调用park类的参数。通过setBlocker设置，
+     * 通过getBlocker访问
      */
     volatile Object parkBlocker;
 
     /* The object in which this thread is blocked in an interruptible I/O
      * operation, if any.  The blocker's interrupt method should be invoked
      * after setting this thread's interrupt status.
+     * 有可中断的I/O操作中阻塞该线程的对象（如果有）。在设置该线程的中断状态后该
+     * 阻塞者的中断方法应该被调用
      */
     private volatile Interruptible blocker;
     private final Object blockerLock = new Object();
@@ -243,22 +274,25 @@ class Thread implements Runnable {
 
     /**
      * The minimum priority that a thread can have.
+     * 最小优先权值
      */
     public final static int MIN_PRIORITY = 1;
 
    /**
      * The default priority that is assigned to a thread.
+     * 默认优先权值
      */
     public final static int NORM_PRIORITY = 5;
 
     /**
      * The maximum priority that a thread can have.
+     * 最大优先权值
      */
     public final static int MAX_PRIORITY = 10;
 
     /**
      * Returns a reference to the currently executing thread object.
-     *
+     * 当前执行线程对象的引用
      * @return  the currently executing thread.
      */
     public static native Thread currentThread();
@@ -267,17 +301,22 @@ class Thread implements Runnable {
      * A hint to the scheduler that the current thread is willing to yield
      * its current use of a processor. The scheduler is free to ignore this
      * hint.
+     *  给调度程序的提示是当前线程愿意放弃当前使用的处理器。调度程序可以随意忽略他的提示
      *
      * <p> Yield is a heuristic attempt to improve relative progression
      * between threads that would otherwise over-utilise a CPU. Its use
      * should be combined with detailed profiling and benchmarking to
      * ensure that it actually has the desired effect.
-     *
+     * 线程调度是一种启发式的尝试，用于改善线程之间的相对进程。否则将过度利用cpu。
+     * 应将其使用与详细的性能分析和基准测试结合起来，以确保它实际上具有所需的效果。
      * <p> It is rarely appropriate to use this method. It may be useful
      * for debugging or testing purposes, where it may help to reproduce
      * bugs due to race conditions. It may also be useful when designing
      * concurrency control constructs such as the ones in the
      * {@link java.util.concurrent.locks} package.
+     * 很少适合使用此方法。 它对于调试或测试目的可能是有用的，因为它可能有助于重现由于竞争
+     * 条件而产生的错误。 当设计诸如{@link java.util.concurrent.locks}包中的并发
+     * 控制结构时，它也可能很有用。
      */
     public static native void yield();
 
@@ -286,7 +325,8 @@ class Thread implements Runnable {
      * execution) for the specified number of milliseconds, subject to
      * the precision and accuracy of system timers and schedulers. The thread
      * does not lose ownership of any monitors.
-     *
+     * 让当前线程去休眠（临时终止执行）指定的毫秒数，取决于系统计数器和调度器的精确性。
+     * 线程并没有失去任何监视器的拥有权
      * @param  millis
      *         the length of time to sleep in milliseconds
      *
@@ -312,7 +352,7 @@ class Thread implements Runnable {
      *
      * @param  nanos
      *         {@code 0-999999} additional nanoseconds to sleep
-     *
+     *          纳秒数的值范围为0到999999
      * @throws  IllegalArgumentException
      *          if the value of {@code millis} is negative, or the value of
      *          {@code nanos} is not in the range {@code 0-999999}
@@ -333,6 +373,8 @@ class Thread implements Runnable {
                                 "nanosecond timeout value out of range");
         }
 
+        // 如果纳秒数大于500000或者毫秒数为0而纳秒数不为0，则增加一毫秒
+        // 说明线程执行休眠过程时间级别是毫秒级别
         if (nanos >= 500000 || (nanos != 0 && millis == 0)) {
             millis++;
         }
@@ -351,14 +393,16 @@ class Thread implements Runnable {
 
     /**
      * Initializes a Thread.
-     *
+     * 初始化一个线程
      * @param g the Thread group
-     * @param target the object whose run() method gets called
-     * @param name the name of the new Thread
+     * @param target the object whose run() method gets called 调用run方法的对象
+     * @param name the name of the new Thread 新线程的名称
      * @param stackSize the desired stack size for the new thread, or
      *        zero to indicate that this parameter is to be ignored.
+     *                  新线程所需要的堆栈长度，如果为0表示这个参数被忽略
      * @param acc the AccessControlContext to inherit, or
      *            AccessController.getContext() if null
+     *
      * @param inheritThreadLocals if {@code true}, inherit initial values for
      *            inheritable thread-locals from the constructing thread
      */
@@ -375,15 +419,17 @@ class Thread implements Runnable {
         SecurityManager security = System.getSecurityManager();
         if (g == null) {
             /* Determine if it's an applet or not */
-
+            // 确定是否为一个应用
             /* If there is a security manager, ask the security manager
                what to do. */
+            // 如果有一个安全管理器，询问安全管理器做什么事
             if (security != null) {
                 g = security.getThreadGroup();
             }
 
             /* If the security doesn't have a strong opinion of the matter
                use the parent thread group. */
+            // 如果安全管理器并没有指定做什么事，则使用parent线程组
             if (g == null) {
                 g = parent.getThreadGroup();
             }
@@ -391,10 +437,12 @@ class Thread implements Runnable {
 
         /* checkAccess regardless of whether or not threadgroup is
            explicitly passed in. */
+        // 不管是否显式传入线程组，都执行checkAccess
         g.checkAccess();
 
         /*
          * Do we have the required permissions?
+         * 我们是否拥有所要求的权限
          */
         if (security != null) {
             if (isCCLOverridden(getClass())) {
@@ -419,6 +467,7 @@ class Thread implements Runnable {
             this.inheritableThreadLocals =
                 ThreadLocal.createInheritedMap(parent.inheritableThreadLocals);
         /* Stash the specified stack size in case the VM cares */
+        // 存放指定的堆栈大小，以防VM需要
         this.stackSize = stackSize;
 
         /* Set thread ID */
@@ -443,6 +492,8 @@ class Thread implements Runnable {
      * {@code (null, null, gname)}, where {@code gname} is a newly generated
      * name. Automatically generated names are of the form
      * {@code "Thread-"+}<i>n</i>, where <i>n</i> is an integer.
+     * 分配一个新的线程对象。这个构造器与Thread(ThreadGroup,Runnable,String) 有同样的作用，
+     * gname是一个新的被分配的名称，并且线程名称自动生成，形式为Thread-整数
      */
     public Thread() {
         init(null, null, "Thread-" + nextThreadNum(), 0);
@@ -1641,6 +1692,8 @@ class Thread implements Runnable {
      * without violating security constraints: the subclass must not override
      * security-sensitive non-final methods, or else the
      * "enableContextClassLoaderOverride" RuntimePermission is checked.
+     * 检验当前或子类实例能够构造，而并没有违背安全约束：子类必须没有重现安全敏感性并且
+     * 非final的方法，或者enableContextClassLoaderOverride的运行时权限检查。
      */
     private static boolean isCCLOverridden(Class<?> cl) {
         if (cl == Thread.class)
