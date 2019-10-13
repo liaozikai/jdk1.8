@@ -1,15 +1,22 @@
 # Jdk1.8源码解析
 本源码解析的主要内容是：
+
 1.解析主要类的中文注释，其中有自己翻译，也有通过谷歌翻译和有道翻译的内容。在翻译过程
 中，可能存在翻译语句不顺的地方，为此造成的误解，请见谅。
-对于翻译不顺畅的语句，大家也可以自己用翻译软件翻译。\
+对于翻译不顺畅的语句，大家也可以自己用翻译软件翻译。
+
 2.测试源码中的方法，了解这些方法的使用。有些比较偏，很少用，并且比较少想到
-测试用例的方法，本人就不测试了。等之后有需要时，再回来研究。\
+测试用例的方法，本人就不测试了。等之后有需要时，再回来研究。
+
 希望有兴趣的朋友一起来翻译，对于我翻译有误的语句，或者想到更好测试用例的朋友，
-不妨一起完善。行动比想法重要，有问题就去解决，完善。比抱怨翻译有用的多，一起加油。\
+不妨一起完善。行动比想法重要，有问题就去解决，完善。比抱怨翻译有用的多，一起加油。
+
 源码解析的阅读顺序，我是参考下面网址的：
-https://blog.csdn.net/qq_21033663/article/details/79571506\
-主要如下：\
+
+https://blog.csdn.net/qq_21033663/article/details/79571506
+
+主要如下：
+
 1、java.lang
 
 1) Object 1
@@ -76,14 +83,23 @@ https://blog.csdn.net/qq_21033663/article/details/79571506\
 4) ExecutorService 2
 5) ThreadPoolExecutor 2
 6) BlockingQueue 2
+
 7）AbstractQueuedSynchronizer 2
+
 8）CountDownLatch 2
+
 9) FutureTask 2
+
 10）Semaphore 2
+
 11）CyclicBarrier 2
+
 13）CopyOnWriteArrayList 3
+
 14）SynchronousQueue 3
+
 15）BlockingDeque 3
+
 16) Callable 4
 
 4、java.util.concurrent.atomic
@@ -150,3 +166,8 @@ https://blog.csdn.net/qq_21033663/article/details/79571506\
 3) URI 4
 4) URL 4
 5) URLEncoder 4
+
+
+补充源码解析类：\
+Iterable\
+Collection

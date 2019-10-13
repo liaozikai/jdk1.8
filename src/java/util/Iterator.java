@@ -31,12 +31,13 @@ import java.util.function.Consumer;
  * An iterator over a collection.  {@code Iterator} takes the place of
  * {@link Enumeration} in the Java Collections Framework.  Iterators
  * differ from enumerations in two ways:
- *
+ * 集合上的迭代器。在java集合框架中Iterator取代Enumeration。Iterator与enumerations
+ * 主要有两个不同：
  * <ul>
  *      <li> Iterators allow the caller to remove elements from the
  *           underlying collection during the iteration with well-defined
- *           semantics.
- *      <li> Method names have been improved.
+ *           semantics. 迭代器允许调用者在迭代过程中使用定义明确的语义从基础集合中删除元素。
+ *      <li> Method names have been improved. 方法名称得到改进。
  * </ul>
  *
  * <p>This interface is a member of the
@@ -56,14 +57,15 @@ public interface Iterator<E> {
      * Returns {@code true} if the iteration has more elements.
      * (In other words, returns {@code true} if {@link #next} would
      * return an element rather than throwing an exception.)
-     *
+     * 如果迭代器还有元素就返回ture。换句话说，当next方法不是抛出异常而是返回
+     * 一个元素，则该方法返回true
      * @return {@code true} if the iteration has more elements
      */
     boolean hasNext();
 
     /**
      * Returns the next element in the iteration.
-     *
+     * 返回迭代器的下个元素
      * @return the next element in the iteration
      * @throws NoSuchElementException if the iteration has no more elements
      */
@@ -76,7 +78,8 @@ public interface Iterator<E> {
      * is unspecified if the underlying collection is modified while the
      * iteration is in progress in any way other than by calling this
      * method.
-     *
+     * 从基础类中移除迭代器返回的最后一个元素（可选操作）。这 每次调用next只能调用一次此方法。
+     * 如果在迭代进行过程中以其他方式（而不是通过调用此方法）修改了基础集合，则未指定迭代器的行为。
      * @implSpec
      * The default implementation throws an instance of
      * {@link UnsupportedOperationException} and performs no other action.
@@ -98,7 +101,9 @@ public interface Iterator<E> {
      * have been processed or the action throws an exception.  Actions are
      * performed in the order of iteration, if that order is specified.
      * Exceptions thrown by the action are relayed to the caller.
-     *
+     * 对于每个剩余的元素执行给定的行为直到所有的元素都被处理或者抛出异常。
+     * 如果顺序是指定的，则actions将会按照迭代中的顺序执行。
+     * 异常由action所依赖的调用者抛出
      * @implSpec
      * <p>The default implementation behaves as if:
      * <pre>{@code

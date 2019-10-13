@@ -1,10 +1,7 @@
 package test.java.lang;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.util.SortedMap;
 
 /**
  * @author liaozikai

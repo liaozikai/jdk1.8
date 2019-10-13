@@ -37,25 +37,31 @@ import sun.misc.SharedSecrets;
  * this class provides methods to manipulate the size of the array that is
  * used internally to store the list.  (This class is roughly equivalent to
  * <tt>Vector</tt>, except that it is unsynchronized.)
- *
+ * List接口可调整大小的数组的实现。实现list的所有可选操作，并且允许所有元素，
+ * 包括null。另外实现list接口，该类提供方法去操作数组的长度，该数组内部用于存储list。
+ * 该类大致相当于Vector，但它是不同步的。
  * <p>The <tt>size</tt>, <tt>isEmpty</tt>, <tt>get</tt>, <tt>set</tt>,
  * <tt>iterator</tt>, and <tt>listIterator</tt> operations run in constant
  * time.  The <tt>add</tt> operation runs in <i>amortized constant time</i>,
  * that is, adding n elements requires O(n) time.  All of the other operations
  * run in linear time (roughly speaking).  The constant factor is low compared
  * to that for the <tt>LinkedList</tt> implementation.
- *
+ * size，isEmpty，get，set，iterator，listIterator操作都是恒定时间（也就是随机访问）。
+ * add方法操作需要O（n）时间。所有其他操作大致是线性时间。与inkedList 实现的常量因子相比，
+ * 常量因子较低。
  * <p>Each <tt>ArrayList</tt> instance has a <i>capacity</i>.  The capacity is
  * the size of the array used to store the elements in the list.  It is always
  * at least as large as the list size.  As elements are added to an ArrayList,
  * its capacity grows automatically.  The details of the growth policy are not
  * specified beyond the fact that adding an element has constant amortized
  * time cost.
- *
+ * 每一个ArrayList实例都有一个容量。该容量用于存储list的长度。它至少等于list的size。
+ * 当ArrayList添加元素，它的容量自动增加。除了添加元素具有固定的摊销时间成本外，
+ * 没有指定增长策略的详细信息。
  * <p>An application can increase the capacity of an <tt>ArrayList</tt> instance
  * before adding a large number of elements using the <tt>ensureCapacity</tt>
  * operation.  This may reduce the amount of incremental reallocation.
- *
+ * 在应用添加大量元素之前使用ensureCapacity能够增加容量。该方法可以减少增量重新分配的数量。
  * <p><strong>Note that this implementation is not synchronized.</strong>
  * If multiple threads access an <tt>ArrayList</tt> instance concurrently,
  * and at least one of the threads modifies the list structurally, it
@@ -64,11 +70,15 @@ import sun.misc.SharedSecrets;
  * resizes the backing array; merely setting the value of an element is not
  * a structural modification.)  This is typically accomplished by
  * synchronizing on some object that naturally encapsulates the list.
- *
+ * 注意该实现不是同步的。如果多线程并发访问一个ArrayList实例，并且至少有一个线程在结构上
+ * 修改该list，则必须在外部进行同步操作。（结构性操作是指增加或者删除元素，或者显性地
+ * 重拍数组。仅仅设置某个元素值不算结构性修改）。通常，通过在自然封装列表的某个对象上
+ * 进行同步来完成此操作。
  * If no such object exists, the list should be "wrapped" using the
  * {@link Collections#synchronizedList Collections.synchronizedList}
  * method.  This is best done at creation time, to prevent accidental
  * unsynchronized access to the list:<pre>
+ *     通过下面的操作来包装成同步list。
  *   List list = Collections.synchronizedList(new ArrayList(...));</pre>
  *
  * <p><a name="fail-fast">
@@ -82,6 +92,7 @@ import sun.misc.SharedSecrets;
  * concurrent modification, the iterator fails quickly and cleanly, rather
  * than risking arbitrary, non-deterministic behavior at an undetermined
  * time in the future.
+ * 在执行上面所说的方法时，如果是并发操作，则会采用快速失败的策略，而不是不确定性的行为。
  *
  * <p>Note that the fail-fast behavior of an iterator cannot be guaranteed
  * as it is, generally speaking, impossible to make any hard guarantees in the
@@ -90,6 +101,10 @@ import sun.misc.SharedSecrets;
  * Therefore, it would be wrong to write a program that depended on this
  * exception for its correctness:  <i>the fail-fast behavior of iterators
  * should be used only to detect bugs.</i>
+ *
+ * 请注意，不能保证迭代器的快速失败行为，因为通常来说，在存在不同步的并发修改的情况下，
+ * 不可能做出任何严格的保证。 快速失败的迭代器会尽最大努力抛出ConcurrentModificationException。
+ * 因此，编写依赖于此异常的程序以确保其正确性是错误的：迭代器的快速失败行为应仅用于检测错误。
  *
  * <p>This class is a member of the
  * <a href="{@docRoot}/../technotes/guides/collections/index.html">
@@ -111,11 +126,13 @@ public class ArrayList<E> extends AbstractList<E>
 
     /**
      * Default initial capacity.
+     * 默认初始容量大小
      */
     private static final int DEFAULT_CAPACITY = 10;
 
     /**
      * Shared empty array instance used for empty instances.
+     * 共享的空数组实例用于空的实例对象
      */
     private static final Object[] EMPTY_ELEMENTDATA = {};
 
@@ -123,6 +140,8 @@ public class ArrayList<E> extends AbstractList<E>
      * Shared empty array instance used for default sized empty instances. We
      * distinguish this from EMPTY_ELEMENTDATA to know how much to inflate when
      * first element is added.
+     * 共享的空数组实例，用于默认大小的空实例。 我们将此与EMPTY_ELEMENTDATA区别开来，
+     * 以了解添加第一个元素时需要填充多少。
      */
     private static final Object[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = {};
 
@@ -131,19 +150,22 @@ public class ArrayList<E> extends AbstractList<E>
      * The capacity of the ArrayList is the length of this array buffer. Any
      * empty ArrayList with elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA
      * will be expanded to DEFAULT_CAPACITY when the first element is added.
+     * 存储ArrayList元素的数组缓冲区。ArrayList的容量是数组缓存的长度。
+     * 当空数组list添加第一个元素时，它的长度从DEFAULTCAPACITY_EMPTY_ELEMENTDATA
+     * 扩展到DEFAULT_CAPACITY
      */
     transient Object[] elementData; // non-private to simplify nested class access
 
     /**
      * The size of the ArrayList (the number of elements it contains).
-     *
+     * 数组list的长度，是指包含多少元素
      * @serial
      */
     private int size;
 
     /**
      * Constructs an empty list with the specified initial capacity.
-     *
+     * 通过指定初始化容量构造一个空list
      * @param  initialCapacity  the initial capacity of the list
      * @throws IllegalArgumentException if the specified initial capacity
      *         is negative
@@ -161,6 +183,7 @@ public class ArrayList<E> extends AbstractList<E>
 
     /**
      * Constructs an empty list with an initial capacity of ten.
+     * 构造一个空list并且初始化容量为10
      */
     public ArrayList() {
         this.elementData = DEFAULTCAPACITY_EMPTY_ELEMENTDATA;
@@ -175,13 +198,14 @@ public class ArrayList<E> extends AbstractList<E>
      * @throws NullPointerException if the specified collection is null
      */
     public ArrayList(Collection<? extends E> c) {
+        // 将c转化为Object[]
         elementData = c.toArray();
-        if ((size = elementData.length) != 0) {
+        if ((size = elementData.length) != 0) {// 将elementData的长度赋给size，然后判断长度是否为0
             // c.toArray might (incorrectly) not return Object[] (see 6260652)
             if (elementData.getClass() != Object[].class)
                 elementData = Arrays.copyOf(elementData, size, Object[].class);
         } else {
-            // replace with empty array.
+            // replace with empty array. 定义为空实例对象
             this.elementData = EMPTY_ELEMENTDATA;
         }
     }
@@ -190,11 +214,13 @@ public class ArrayList<E> extends AbstractList<E>
      * Trims the capacity of this <tt>ArrayList</tt> instance to be the
      * list's current size.  An application can use this operation to minimize
      * the storage of an <tt>ArrayList</tt> instance.
+     * 将该ArrayList实例的容量调整为列表的当前大小。 应用程序可以使用此操作
+     * 来最大程度地减少ArrayList实例的存储。
      */
     public void trimToSize() {
         modCount++;
         if (size < elementData.length) {
-            elementData = (size == 0)
+            elementData = (size == 0)// 如果size长度为0，则设为空实例。否则复制elementData
               ? EMPTY_ELEMENTDATA
               : Arrays.copyOf(elementData, size);
         }
@@ -204,7 +230,7 @@ public class ArrayList<E> extends AbstractList<E>
      * Increases the capacity of this <tt>ArrayList</tt> instance, if
      * necessary, to ensure that it can hold at least the number of elements
      * specified by the minimum capacity argument.
-     *
+     * 增加该ArrayList的容量，如果有必要，确保它能够拥有指定最小容量
      * @param   minCapacity   the desired minimum capacity
      */
     public void ensureCapacity(int minCapacity) {
@@ -250,13 +276,13 @@ public class ArrayList<E> extends AbstractList<E>
     /**
      * Increases the capacity to ensure that it can hold at least the
      * number of elements specified by the minimum capacity argument.
-     *
+     * 增加该ArrayList的容量，如果有必要，确保它能够拥有指定最小容量
      * @param minCapacity the desired minimum capacity
      */
     private void grow(int minCapacity) {
         // overflow-conscious code
         int oldCapacity = elementData.length;
-        int newCapacity = oldCapacity + (oldCapacity >> 1);
+        int newCapacity = oldCapacity + (oldCapacity >> 1);// 新容量是旧容量的3/2倍
         if (newCapacity - minCapacity < 0)
             newCapacity = minCapacity;
         if (newCapacity - MAX_ARRAY_SIZE > 0)
@@ -265,6 +291,7 @@ public class ArrayList<E> extends AbstractList<E>
         elementData = Arrays.copyOf(elementData, newCapacity);
     }
 
+    // 跟父类AbstractCollection的方法一样的扩展容量方式
     private static int hugeCapacity(int minCapacity) {
         if (minCapacity < 0) // overflow
             throw new OutOfMemoryError();
@@ -310,6 +337,7 @@ public class ArrayList<E> extends AbstractList<E>
      * More formally, returns the lowest index <tt>i</tt> such that
      * <tt>(o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i)))</tt>,
      * or -1 if there is no such index.
+     * 返回指定元素第一次出现的位置，如果没有该元素返回-1
      */
     public int indexOf(Object o) {
         if (o == null) {
@@ -330,6 +358,7 @@ public class ArrayList<E> extends AbstractList<E>
      * More formally, returns the highest index <tt>i</tt> such that
      * <tt>(o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i)))</tt>,
      * or -1 if there is no such index.
+     * 返回指定元素最后一次出现的位置，如果没有该元素返回-1
      */
     public int lastIndexOf(Object o) {
         if (o == null) {
@@ -347,7 +376,7 @@ public class ArrayList<E> extends AbstractList<E>
     /**
      * Returns a shallow copy of this <tt>ArrayList</tt> instance.  (The
      * elements themselves are not copied.)
-     *
+     * 返回此ArrayList实例的浅克隆副本。 （元素本身不会被复制。）
      * @return a clone of this <tt>ArrayList</tt> instance
      */
     public Object clone() {
@@ -365,13 +394,13 @@ public class ArrayList<E> extends AbstractList<E>
     /**
      * Returns an array containing all of the elements in this list
      * in proper sequence (from first to last element).
-     *
+     * 返回一个包含所有元素的数组并且这些元素是顺序排列的
      * <p>The returned array will be "safe" in that no references to it are
      * maintained by this list.  (In other words, this method must allocate
      * a new array).  The caller is thus free to modify the returned array.
-     *
+     * 返回数组是安全的因为原list没有引用指向新数组。也就是说，新返回的数组是复制的方式。
      * <p>This method acts as bridge between array-based and collection-based
-     * APIs.
+     * APIs.该方法作为基于数组和基于集合的桥梁、
      *
      * @return an array containing all of the elements in this list in
      *         proper sequence
@@ -416,6 +445,7 @@ public class ArrayList<E> extends AbstractList<E>
     }
 
     // Positional Access Operations
+    // 通过位置来访问
 
     @SuppressWarnings("unchecked")
     E elementData(int index) {
@@ -454,12 +484,12 @@ public class ArrayList<E> extends AbstractList<E>
 
     /**
      * Appends the specified element to the end of this list.
-     *
+     * 在list尾部添加指定元素
      * @param e element to be appended to this list
      * @return <tt>true</tt> (as specified by {@link Collection#add})
      */
     public boolean add(E e) {
-        ensureCapacityInternal(size + 1);  // Increments modCount!!
+        ensureCapacityInternal(size + 1);  // Increments modCount!! 只要是增加，删除操作就会修改modCount
         elementData[size++] = e;
         return true;
     }
@@ -468,7 +498,7 @@ public class ArrayList<E> extends AbstractList<E>
      * Inserts the specified element at the specified position in this
      * list. Shifts the element currently at that position (if any) and
      * any subsequent elements to the right (adds one to their indices).
-     *
+     * 在当前list指定位置添加指定元素，在指定元素及之后的元素往后移。
      * @param index index at which the specified element is to be inserted
      * @param element element to be inserted
      * @throws IndexOutOfBoundsException {@inheritDoc}
@@ -487,7 +517,7 @@ public class ArrayList<E> extends AbstractList<E>
      * Removes the element at the specified position in this list.
      * Shifts any subsequent elements to the left (subtracts one from their
      * indices).
-     *
+     * 将指定位置的元素移除，在其后面的元素往前移
      * @param index the index of the element to be removed
      * @return the element that was removed from the list
      * @throws IndexOutOfBoundsException {@inheritDoc}
@@ -516,7 +546,7 @@ public class ArrayList<E> extends AbstractList<E>
      * (if such an element exists).  Returns <tt>true</tt> if this list
      * contained the specified element (or equivalently, if this list
      * changed as a result of the call).
-     *
+     * 移除第一次出现该元素的list
      * @param o element to be removed from this list, if present
      * @return <tt>true</tt> if this list contained the specified element
      */
@@ -540,6 +570,7 @@ public class ArrayList<E> extends AbstractList<E>
     /*
      * Private remove method that skips bounds checking and does not
      * return the value removed.
+     * 跳过bounds检查并且没有返回删除元素的私有方法
      */
     private void fastRemove(int index) {
         modCount++;
@@ -558,6 +589,7 @@ public class ArrayList<E> extends AbstractList<E>
         modCount++;
 
         // clear to let GC do its work
+        // 设置为null方便GC清除
         for (int i = 0; i < size; i++)
             elementData[i] = null;
 
@@ -572,7 +604,8 @@ public class ArrayList<E> extends AbstractList<E>
      * is in progress.  (This implies that the behavior of this call is
      * undefined if the specified collection is this list, and this
      * list is nonempty.)
-     *
+     * 按序在list尾部添加参数集合的所有元素。如果操作执行过程中参数集合被修改，则这个操作
+     * 是未指定的。
      * @param c collection containing elements to be added to this list
      * @return <tt>true</tt> if this list changed as a result of the call
      * @throws NullPointerException if the specified collection is null
@@ -593,7 +626,7 @@ public class ArrayList<E> extends AbstractList<E>
      * the right (increases their indices).  The new elements will appear
      * in the list in the order that they are returned by the
      * specified collection's iterator.
-     *
+     * 在指定位置添加集合所有元素，并将指定位置的元素整体往后移
      * @param index index at which to insert the first element from the
      *              specified collection
      * @param c collection containing elements to be added to this list
@@ -677,7 +710,7 @@ public class ArrayList<E> extends AbstractList<E>
     /**
      * Removes from this list all of its elements that are contained in the
      * specified collection.
-     *
+     * 移除该list中拥有的指定参数集合的所有元素
      * @param c collection containing elements to be removed from this list
      * @return {@code true} if this list changed as a result of the call
      * @throws ClassCastException if the class of an element of this list
@@ -698,7 +731,7 @@ public class ArrayList<E> extends AbstractList<E>
      * Retains only the elements in this list that are contained in the
      * specified collection.  In other words, removes from this list all
      * of its elements that are not contained in the specified collection.
-     *
+     * 保留该list中拥有的指定参数集合的所有元素
      * @param c collection containing elements to be retained in this list
      * @return {@code true} if this list changed as a result of the call
      * @throws ClassCastException if the class of an element of this list
@@ -721,6 +754,7 @@ public class ArrayList<E> extends AbstractList<E>
         boolean modified = false;
         try {
             for (; r < size; r++)
+                // 通过一个标识符做到了保留和删除的功能
                 if (c.contains(elementData[r]) == complement)
                     elementData[w++] = elementData[r];
         } finally {
@@ -747,7 +781,7 @@ public class ArrayList<E> extends AbstractList<E>
     /**
      * Save the state of the <tt>ArrayList</tt> instance to a stream (that
      * is, serialize it).
-     *
+     * 保留该list的状态到流中，也就是序列化它
      * @serialData The length of the array backing the <tt>ArrayList</tt>
      *             instance is emitted (int), followed by all of its elements
      *             (each an <tt>Object</tt>) in the proper order.
@@ -774,6 +808,7 @@ public class ArrayList<E> extends AbstractList<E>
     /**
      * Reconstitute the <tt>ArrayList</tt> instance from a stream (that is,
      * deserialize it).
+     * 反序列化
      */
     private void readObject(java.io.ObjectInputStream s)
         throws java.io.IOException, ClassNotFoundException {
@@ -842,6 +877,7 @@ public class ArrayList<E> extends AbstractList<E>
 
     /**
      * An optimized version of AbstractList.Itr
+     * AbstractList.Itr的优化版本
      */
     private class Itr implements Iterator<E> {
         int cursor;       // index of next element to return
@@ -912,6 +948,7 @@ public class ArrayList<E> extends AbstractList<E>
 
     /**
      * An optimized version of AbstractList.ListItr
+     * AbstractList.ListItr的优化版本
      */
     private class ListItr extends Itr implements ListIterator<E> {
         ListItr(int index) {
@@ -1015,9 +1052,11 @@ public class ArrayList<E> extends AbstractList<E>
                                                ") > toIndex(" + toIndex + ")");
     }
 
+    // 这个类感觉就像是在把ArrayList重新实现了一遍，但是，仔细观察，可以看到SubList继承的是AbstractList
+    // 则该类提供了与ArrayList相同级别的类型转换，如可以将其转化为LinkedList
     private class SubList extends AbstractList<E> implements RandomAccess {
         private final AbstractList<E> parent;
-        private final int parentOffset;
+        private final int parentOffset; // 比起ArrayList，多了这个属性，看代码应该是要有一个指针指向外部类的下标
         private final int offset;
         int size;
 
@@ -1420,6 +1459,7 @@ public class ArrayList<E> extends AbstractList<E>
         }
 
         // shift surviving elements left over the spaces left by removed elements
+        // 将剩余的生存元素移到已删除元素剩余的空间上
         final boolean anyToRemove = removeCount > 0;
         if (anyToRemove) {
             final int newSize = size - removeCount;
