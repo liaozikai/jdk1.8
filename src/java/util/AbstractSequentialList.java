@@ -31,28 +31,29 @@ package java.util;
  * backed by a "sequential access" data store (such as a linked list).  For
  * random access data (such as an array), <tt>AbstractList</tt> should be used
  * in preference to this class.<p>
- *
+ * 跟ArrayList差不多。不过如果是要随机访问数据，还是使用AbstractList及其子类更好用。
  * This class is the opposite of the <tt>AbstractList</tt> class in the sense
  * that it implements the "random access" methods (<tt>get(int index)</tt>,
  * <tt>set(int index, E element)</tt>, <tt>add(int index, E element)</tt> and
  * <tt>remove(int index)</tt>) on top of the list's list iterator, instead of
  * the other way around.<p>
- *
+ * 该类感觉上与AbstractList相反，它实现随机访问是从头开始查找（链表的结构）
  * To implement a list the programmer needs only to extend this class and
  * provide implementations for the <tt>listIterator</tt> and <tt>size</tt>
  * methods.  For an unmodifiable list, the programmer need only implement the
  * list iterator's <tt>hasNext</tt>, <tt>next</tt>, <tt>hasPrevious</tt>,
  * <tt>previous</tt> and <tt>index</tt> methods.<p>
- *
+ * 编程人员只需要实现listIterator和size方法。对于不可修改的list，编程人员只需要实现
+ * hasNext，next，hasPrevious等方法
  * For a modifiable list the programmer should additionally implement the list
  * iterator's <tt>set</tt> method.  For a variable-size list the programmer
  * should additionally implement the list iterator's <tt>remove</tt> and
  * <tt>add</tt> methods.<p>
- *
+ * 对于可修改的list，编程人员需要额外实现set方法等。
  * The programmer should generally provide a void (no argument) and collection
  * constructor, as per the recommendation in the <tt>Collection</tt> interface
  * specification.<p>
- *
+ * 编程人员一般提供空参数和集合参数的构造器。
  * This class is a member of the
  * <a href="{@docRoot}/../technotes/guides/collections/index.html">
  * Java Collections Framework</a>.
@@ -76,7 +77,7 @@ public abstract class AbstractSequentialList<E> extends AbstractList<E> {
 
     /**
      * Returns the element at the specified position in this list.
-     *
+     * 获取该list的指定位置元素
      * <p>This implementation first gets a list iterator pointing to the
      * indexed element (with <tt>listIterator(index)</tt>).  Then, it gets
      * the element using <tt>ListIterator.next</tt> and returns it.
@@ -94,7 +95,7 @@ public abstract class AbstractSequentialList<E> extends AbstractList<E> {
     /**
      * Replaces the element at the specified position in this list with the
      * specified element (optional operation).
-     *
+     * 用指定元素代替指定位置的指定元素，返回该位置的旧元素
      * <p>This implementation first gets a list iterator pointing to the
      * indexed element (with <tt>listIterator(index)</tt>).  Then, it gets
      * the current element using <tt>ListIterator.next</tt> and replaces it
@@ -126,7 +127,7 @@ public abstract class AbstractSequentialList<E> extends AbstractList<E> {
      * (optional operation).  Shifts the element currently at that position
      * (if any) and any subsequent elements to the right (adds one to their
      * indices).
-     *
+     * 在指定位置插入指定元素，并将其余元素往后移
      * <p>This implementation first gets a list iterator pointing to the
      * indexed element (with <tt>listIterator(index)</tt>).  Then, it
      * inserts the specified element with <tt>ListIterator.add</tt>.
@@ -154,7 +155,7 @@ public abstract class AbstractSequentialList<E> extends AbstractList<E> {
      * operation).  Shifts any subsequent elements to the left (subtracts one
      * from their indices).  Returns the element that was removed from the
      * list.
-     *
+     * 移除指定位置的元素，将后面的元素向左移，返回移除的元素
      * <p>This implementation first gets a list iterator pointing to the
      * indexed element (with <tt>listIterator(index)</tt>).  Then, it removes
      * the element with <tt>ListIterator.remove</tt>.
@@ -190,7 +191,7 @@ public abstract class AbstractSequentialList<E> extends AbstractList<E> {
      * undefined if the specified collection is modified while the
      * operation is in progress.  (Note that this will occur if the specified
      * collection is this list, and it's nonempty.)
-     *
+     * 插入指定元素并移动后面元素
      * <p>This implementation gets an iterator over the specified collection and
      * a list iterator over this list pointing to the indexed element (with
      * <tt>listIterator(index)</tt>).  Then, it iterates over the specified
@@ -230,7 +231,7 @@ public abstract class AbstractSequentialList<E> extends AbstractList<E> {
     /**
      * Returns an iterator over the elements in this list (in proper
      * sequence).<p>
-     *
+     * 返回该list的迭代器
      * This implementation merely returns a list iterator over the list.
      *
      * @return an iterator over the elements in this list (in proper sequence)
@@ -242,7 +243,7 @@ public abstract class AbstractSequentialList<E> extends AbstractList<E> {
     /**
      * Returns a list iterator over the elements in this list (in proper
      * sequence).
-     *
+     * 返回该list的list iterator
      * @param  index index of first element to be returned from the list
      *         iterator (by a call to the <code>next</code> method)
      * @return a list iterator over the elements in this list (in proper
