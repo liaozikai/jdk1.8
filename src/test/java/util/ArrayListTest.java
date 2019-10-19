@@ -160,9 +160,9 @@ public class ArrayListTest {
             Student student =(Student) ((ArrayList) s2List).get(0);
             System.out.println(student.getName());
             student.setName("Hello Java World");
-            // 输出 我是正宗的中国人
+            // 输出 Hello Java World
             System.out.println(student.getName());
-            // 输出 我是正宗的中国人 说明该赋值是浅复制，只对基本类型和String.类型的复制有效
+            // 输出 Hello Java World 说明该赋值是浅复制，只对基本类型和String.类型的复制有效
             System.out.println(s1List.get(0).getName());
         }
 //        清除后，长度会被重置为0

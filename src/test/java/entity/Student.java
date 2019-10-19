@@ -11,6 +11,14 @@ public class Student implements Cloneable{
         this.name = name;
     }
 
+    public Student(String name) {
+        this.name = name;
+    }
+
+    public Student() {
+
+    }
+
     @Override
     protected Object clone() throws CloneNotSupportedException {
         return super.clone();

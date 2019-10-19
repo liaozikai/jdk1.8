@@ -33,10 +33,10 @@ import java.io.Serializable;
 /**
  * An object that maps keys to values.  A map cannot contain duplicate keys;
  * each key can map to at most one value.
- *
+ * 该对象用于将key值映射到value值。keys不能包含多个，每个key映射至多一个value
  * <p>This interface takes the place of the <tt>Dictionary</tt> class, which
  * was a totally abstract class rather than an interface.
- *
+ * 该接口取代了Dictionary类，后者是抽象类而非接口
  * <p>The <tt>Map</tt> interface provides three <i>collection views</i>, which
  * allow a map's contents to be viewed as a set of keys, collection of values,
  * or set of key-value mappings.  The <i>order</i> of a map is defined as
@@ -44,7 +44,9 @@ import java.io.Serializable;
  * elements.  Some map implementations, like the <tt>TreeMap</tt> class, make
  * specific guarantees as to their order; others, like the <tt>HashMap</tt>
  * class, do not.
- *
+ * Map接口提供了三种集合视图，它们允许将map的内容作为一组键，值的集合或者键值映射来查看。
+ * 映射的顺序为定义为映射集合视图上的迭代器返回其元素的顺序。 某些map实现（例如<tt> TreeMap </ tt>类）
+ * 对它们的顺序做出特定的保证。 其他对象，例如<tt> HashMap </ tt>类，则不会。
  * <p>Note: great care must be exercised if mutable objects are used as map
  * keys.  The behavior of a map is not specified if the value of an object is
  * changed in a manner that affects <tt>equals</tt> comparisons while the
@@ -133,14 +135,14 @@ public interface Map<K,V> {
      * Returns the number of key-value mappings in this map.  If the
      * map contains more than <tt>Integer.MAX_VALUE</tt> elements, returns
      * <tt>Integer.MAX_VALUE</tt>.
-     *
+     * 返回键值对映射的数量，如果该数量操作Interger的最大值，则返回Integer的最大值
      * @return the number of key-value mappings in this map
      */
     int size();
 
     /**
      * Returns <tt>true</tt> if this map contains no key-value mappings.
-     *
+     * 没有键值对映射则返回true
      * @return <tt>true</tt> if this map contains no key-value mappings
      */
     boolean isEmpty();
@@ -151,7 +153,7 @@ public interface Map<K,V> {
      * this map contains a mapping for a key <tt>k</tt> such that
      * <tt>(key==null ? k==null : key.equals(k))</tt>.  (There can be
      * at most one such mapping.)
-     *
+     * 如果该map包含指定key则返回true，至多能有一个key
      * @param key key whose presence in this map is to be tested
      * @return <tt>true</tt> if this map contains a mapping for the specified
      *         key
@@ -171,7 +173,7 @@ public interface Map<K,V> {
      * <tt>(value==null ? v==null : value.equals(v))</tt>.  This operation
      * will probably require time linear in the map size for most
      * implementations of the <tt>Map</tt> interface.
-     *
+     * 返回true如果该map的一个或多个key映射到指定值。此操作的时间复杂度一般是线性的
      * @param value value whose presence in this map is to be tested
      * @return <tt>true</tt> if this map maps one or more keys to the
      *         specified value
@@ -187,7 +189,7 @@ public interface Map<K,V> {
     /**
      * Returns the value to which the specified key is mapped,
      * or {@code null} if this map contains no mapping for the key.
-     *
+     * 返回指定key映射的值。如果不包含该key返回null
      * <p>More formally, if this map contains a mapping from a key
      * {@code k} to a value {@code v} such that {@code (key==null ? k==null :
      * key.equals(k))}, then this method returns {@code v}; otherwise
@@ -198,7 +200,8 @@ public interface Map<K,V> {
      * contains no mapping for the key; it's also possible that the map
      * explicitly maps the key to {@code null}.  The {@link #containsKey
      * containsKey} operation may be used to distinguish these two cases.
-     *
+     * 如果map允许映射null值，则返回null有两种情况。一种是找不到key对应的value值，
+     * 一种是key值对应value值为null，故而用containsKey方法先判断是个不错选择。
      * @param key the key whose associated value is to be returned
      * @return the value to which the specified key is mapped, or
      *         {@code null} if this map contains no mapping for the key
@@ -212,7 +215,7 @@ public interface Map<K,V> {
     V get(Object key);
 
     // Modification Operations
-
+    // 修改操作
     /**
      * Associates the specified value with the specified key in this map
      * (optional operation).  If the map previously contained a mapping for
@@ -220,7 +223,7 @@ public interface Map<K,V> {
      * <tt>m</tt> is said to contain a mapping for a key <tt>k</tt> if and only
      * if {@link #containsKey(Object) m.containsKey(k)} would return
      * <tt>true</tt>.)
-     *
+     * 将key值和value的映射关系放到该map中。如果该map原先包含key值，则替换指定值。
      * @param key key with which the specified value is to be associated
      * @param value value to be associated with the specified key
      * @return the previous value associated with <tt>key</tt>, or
@@ -245,10 +248,10 @@ public interface Map<K,V> {
      * from key <tt>k</tt> to value <tt>v</tt> such that
      * <code>(key==null ?  k==null : key.equals(k))</code>, that mapping
      * is removed.  (The map can contain at most one such mapping.)
-     *
+     * 如果存在该key值，则移除该key和其映射的value。
      * <p>Returns the value to which this map previously associated the key,
      * or <tt>null</tt> if the map contained no mapping for the key.
-     *
+     * 返回key对应的value，如果该map不包含key则返回null
      * <p>If this map permits null values, then a return value of
      * <tt>null</tt> does not <i>necessarily</i> indicate that the map
      * contained no mapping for the key; it's also possible that the map
@@ -256,6 +259,7 @@ public interface Map<K,V> {
      *
      * <p>The map will not contain a mapping for the specified key once the
      * call returns.
+     * 该方法一旦调用，则该map不会包含该指定key和value的映射。
      *
      * @param key key whose mapping is to be removed from the map
      * @return the previous value associated with <tt>key</tt>, or
@@ -273,6 +277,7 @@ public interface Map<K,V> {
 
 
     // Bulk Operations
+    // 批量操作
 
     /**
      * Copies all of the mappings from the specified map to this map
@@ -281,7 +286,7 @@ public interface Map<K,V> {
      * for each mapping from key <tt>k</tt> to value <tt>v</tt> in the
      * specified map.  The behavior of this operation is undefined if the
      * specified map is modified while the operation is in progress.
-     *
+     * 将另外一个map的映射都放在这个map中
      * @param m mappings to be stored in this map
      * @throws UnsupportedOperationException if the <tt>putAll</tt> operation
      *         is not supported by this map
@@ -298,7 +303,7 @@ public interface Map<K,V> {
     /**
      * Removes all of the mappings from this map (optional operation).
      * The map will be empty after this call returns.
-     *
+     * 将该map中所有的映射关系都移除。调用该方法后map将会为空
      * @throws UnsupportedOperationException if the <tt>clear</tt> operation
      *         is not supported by this map
      */
@@ -306,6 +311,7 @@ public interface Map<K,V> {
 
 
     // Views
+    // 查看视图
 
     /**
      * Returns a {@link Set} view of the keys contained in this map.
@@ -319,7 +325,8 @@ public interface Map<K,V> {
      * <tt>removeAll</tt>, <tt>retainAll</tt>, and <tt>clear</tt>
      * operations.  It does not support the <tt>add</tt> or <tt>addAll</tt>
      * operations.
-     *
+     * 返回该map包含的keys的视图集合。该集合由map所来，所以修改map会影响set。
+     * 反之亦然。
      * @return a set view of the keys contained in this map
      */
     Set<K> keySet();
@@ -336,7 +343,8 @@ public interface Map<K,V> {
      * <tt>Collection.remove</tt>, <tt>removeAll</tt>,
      * <tt>retainAll</tt> and <tt>clear</tt> operations.  It does not
      * support the <tt>add</tt> or <tt>addAll</tt> operations.
-     *
+     * 返回该map中keys对应的所有value。该集合由map所来，所以修改map会影响set。
+     * 反之亦然。
      * @return a collection view of the values contained in this map
      */
     Collection<V> values();
@@ -354,7 +362,7 @@ public interface Map<K,V> {
      * <tt>Set.remove</tt>, <tt>removeAll</tt>, <tt>retainAll</tt> and
      * <tt>clear</tt> operations.  It does not support the
      * <tt>add</tt> or <tt>addAll</tt> operations.
-     *
+     * 返回set集合，该集合包含整个map。
      * @return a set view of the mappings contained in this map
      */
     Set<Map.Entry<K, V>> entrySet();
@@ -368,14 +376,15 @@ public interface Map<K,V> {
      * the behavior of a map entry is undefined if the backing map has been
      * modified after the entry was returned by the iterator, except through
      * the <tt>setValue</tt> operation on the map entry.
-     *
+     * 该接口是map实体（键值对）。Map.entrySet方法返回该map的集合视图。、
+     * 获取该map实体的引用的方式就是从该集合视图的迭代器获取。
      * @see Map#entrySet()
      * @since 1.2
      */
     interface Entry<K,V> {
         /**
          * Returns the key corresponding to this entry.
-         *
+         * 获取该实体的key值
          * @return the key corresponding to this entry
          * @throws IllegalStateException implementations may, but are not
          *         required to, throw this exception if the entry has been
@@ -387,7 +396,7 @@ public interface Map<K,V> {
          * Returns the value corresponding to this entry.  If the mapping
          * has been removed from the backing map (by the iterator's
          * <tt>remove</tt> operation), the results of this call are undefined.
-         *
+         * 返回该实体对应的value。
          * @return the value corresponding to this entry
          * @throws IllegalStateException implementations may, but are not
          *         required to, throw this exception if the entry has been
@@ -400,7 +409,7 @@ public interface Map<K,V> {
          * value (optional operation).  (Writes through to the map.)  The
          * behavior of this call is undefined if the mapping has already been
          * removed from the map (by the iterator's <tt>remove</tt> operation).
-         *
+         * 用指定的value值取代当前实体的value值
          * @param value new value to be stored in this entry
          * @return old value corresponding to the entry
          * @throws UnsupportedOperationException if the <tt>put</tt> operation
@@ -422,6 +431,8 @@ public interface Map<K,V> {
          * Returns <tt>true</tt> if the given object is also a map entry and
          * the two entries represent the same mapping.  More formally, two
          * entries <tt>e1</tt> and <tt>e2</tt> represent the same mapping
+         * 比较两个指定实体是否相同。比较的方式是比较他们的key值和value值是否相等，
+         * 两个都相等才是相等
          * if<pre>
          *     (e1.getKey()==null ?
          *      e2.getKey()==null : e1.getKey().equals(e2.getKey()))  &amp;&amp;
@@ -447,7 +458,7 @@ public interface Map<K,V> {
          * <tt>e1.hashCode()==e2.hashCode()</tt> for any two Entries
          * <tt>e1</tt> and <tt>e2</tt>, as required by the general
          * contract of <tt>Object.hashCode</tt>.
-         *
+         * equal相等，则该hashcode相等
          * @return the hash code value for this map entry
          * @see Object#hashCode()
          * @see Object#equals(Object)
@@ -457,10 +468,10 @@ public interface Map<K,V> {
 
         /**
          * Returns a comparator that compares {@link Map.Entry} in natural order on key.
-         *
+         * 返回一个以自然顺序比较key值的比较器
          * <p>The returned comparator is serializable and throws {@link
          * NullPointerException} when comparing an entry with a null key.
-         *
+         * 返回的比较器是序列化的并且当比较的实体的key为null则抛出空指针异常
          * @param  <K> the {@link Comparable} type of then map keys
          * @param  <V> the type of the map values
          * @return a comparator that compares {@link Map.Entry} in natural order on key.
@@ -474,7 +485,7 @@ public interface Map<K,V> {
 
         /**
          * Returns a comparator that compares {@link Map.Entry} in natural order on value.
-         *
+         * 返回一个以自然顺序比较value值的比较器
          * <p>The returned comparator is serializable and throws {@link
          * NullPointerException} when comparing an entry with null values.
          *
@@ -492,7 +503,7 @@ public interface Map<K,V> {
         /**
          * Returns a comparator that compares {@link Map.Entry} by key using the given
          * {@link Comparator}.
-         *
+         * 返回一个比较器，该比较器使用给定的比较器按键比较
          * <p>The returned comparator is serializable if the specified comparator
          * is also serializable.
          *
@@ -511,7 +522,7 @@ public interface Map<K,V> {
         /**
          * Returns a comparator that compares {@link Map.Entry} by value using the given
          * {@link Comparator}.
-         *
+         * 返回一个比较器，该比较器使用给定的比较器按值比较
          * <p>The returned comparator is serializable if the specified comparator
          * is also serializable.
          *
@@ -538,7 +549,7 @@ public interface Map<K,V> {
      * <tt>m1.entrySet().equals(m2.entrySet())</tt>.  This ensures that the
      * <tt>equals</tt> method works properly across different implementations
      * of the <tt>Map</tt> interface.
-     *
+     * 比较两个map的相等性。如果给定的对象是个map并且两个map代表相同映射返回true。
      * @param o object to be compared for equality with this map
      * @return <tt>true</tt> if the specified object is equal to this map
      */
@@ -551,7 +562,9 @@ public interface Map<K,V> {
      * implies that <tt>m1.hashCode()==m2.hashCode()</tt> for any two maps
      * <tt>m1</tt> and <tt>m2</tt>, as required by the general contract of
      * {@link Object#hashCode}.
-     *
+     * 返回该map的hashcode。该hashcode是由map中每个key和value的值计算来的，
+     * 并且，当两个对象equals值相等时，则hashcode值也相等，遵守了Object的hashcode方法
+     * 的约束。
      * @return the hash code value for this map
      * @see Map.Entry#hashCode()
      * @see Object#equals(Object)
@@ -559,17 +572,19 @@ public interface Map<K,V> {
      */
     int hashCode();
 
-    // Defaultable methods
+    // Defaultable methods 默认表方法
 
     /**
      * Returns the value to which the specified key is mapped, or
      * {@code defaultValue} if this map contains no mapping for the key.
-     *
+     * 如果该map包含key，则返回key对应的value，否则返回默认值。
      * @implSpec
      * The default implementation makes no guarantees about synchronization
      * or atomicity properties of this method. Any implementation providing
      * atomicity guarantees must override this method and document its
      * concurrency properties.
+     * 默认实现不保证此方法的同步性或原子性。 提供原子性保证的任何实现都必须
+     * 重写此方法并记录其并发属性。
      *
      * @param key the key whose associated value is to be returned
      * @param defaultValue the default mapping of the key
@@ -596,10 +611,12 @@ public interface Map<K,V> {
      * otherwise specified by the implementing class, actions are performed in
      * the order of entry set iteration (if an iteration order is specified.)
      * Exceptions thrown by the action are relayed to the caller.
-     *
+     * 对该map中的每个实体都执行给定的行为，直到所有的实体都执行过或者抛出异常。
+     * 除非实现类另行指定，否则操作将按照条目集迭代的顺序执行（如果指定了迭代顺序。）
+     * 操作所引发的异常会中继到调用者。
      * @implSpec
      * The default implementation is equivalent to, for this {@code map}:
-     * <pre> {@code
+     * <pre> {@code 默认实现等价于下面的实现方式
      * for (Map.Entry<K, V> entry : map.entrySet())
      *     action.accept(entry.getKey(), entry.getValue());
      * }</pre>
@@ -608,7 +625,7 @@ public interface Map<K,V> {
      * or atomicity properties of this method. Any implementation providing
      * atomicity guarantees must override this method and document its
      * concurrency properties.
-     *
+     * 默认实现不保证该方法的同步性和原子性。任何提供原子性的方法都要重写该方法。
      * @param action The action to be performed for each entry
      * @throws NullPointerException if the specified action is null
      * @throws ConcurrentModificationException if an entry is found to be
@@ -636,10 +653,10 @@ public interface Map<K,V> {
      * function on that entry until all entries have been processed or the
      * function throws an exception.  Exceptions thrown by the function are
      * relayed to the caller.
-     *
+     * 通过给定方法取代每个实体的值。
      * @implSpec
      * <p>The default implementation is equivalent to, for this {@code map}:
-     * <pre> {@code
+     * <pre> {@code 默认等价实现如下：
      * for (Map.Entry<K, V> entry : map.entrySet())
      *     entry.setValue(function.apply(entry.getKey(), entry.getValue()));
      * }</pre>
@@ -699,7 +716,8 @@ public interface Map<K,V> {
      * If the specified key is not already associated with a value (or is mapped
      * to {@code null}) associates it with the given value and returns
      * {@code null}, else returns the current value.
-     *
+     * 如果指定key映射不到指定值，或者是null值，则将key与value建立映射关系，
+     * 佛则并且返回当前值（直接看代码好过。。。）
      * @implSpec
      * The default implementation is equivalent to, for this {@code
      * map}:
@@ -750,10 +768,10 @@ public interface Map<K,V> {
     /**
      * Removes the entry for the specified key only if it is currently
      * mapped to the specified value.
-     *
+     * 移除指定key值及其映射，当且仅当key值对应的value与给定value值相等时
      * @implSpec
      * The default implementation is equivalent to, for this {@code map}:
-     *
+     * 默认实现等价如下：
      * <pre> {@code
      * if (map.containsKey(key) && Objects.equals(map.get(key), value)) {
      *     map.remove(key);
@@ -794,10 +812,10 @@ public interface Map<K,V> {
     /**
      * Replaces the entry for the specified key only if currently
      * mapped to the specified value.
-     *
+     * 取代指定key值及其映射，当且仅当key值对应的value与给定value值相等时
      * @implSpec
      * The default implementation is equivalent to, for this {@code map}:
-     *
+     * 默认实现等价如下：
      * <pre> {@code
      * if (map.containsKey(key) && Objects.equals(map.get(key), value)) {
      *     map.put(key, newValue);
@@ -809,7 +827,8 @@ public interface Map<K,V> {
      * The default implementation does not throw NullPointerException
      * for maps that do not support null values if oldValue is null unless
      * newValue is also null.
-     *
+     * 如果oldValue为null，除非newValue也为null，否则默认实现不引发不支持null值的
+     * map的NullPointerException。
      * <p>The default implementation makes no guarantees about synchronization
      * or atomicity properties of this method. Any implementation providing
      * atomicity guarantees must override this method and document its
@@ -846,7 +865,7 @@ public interface Map<K,V> {
     /**
      * Replaces the entry for the specified key only if it is
      * currently mapped to some value.
-     *
+     * 取代指定key值实体，当且仅当map存在该key并且该key对应value不为null
      * @implSpec
      * The default implementation is equivalent to, for this {@code map}:
      *
@@ -893,7 +912,8 @@ public interface Map<K,V> {
      * If the specified key is not already associated with a value (or is mapped
      * to {@code null}), attempts to compute its value using the given mapping
      * function and enters it into this map unless {@code null}.
-     *
+     * 如果指定key值没有映射到value值或者映射的value值为null，则尝试
+     * 使用给定的映射方法计算value值，并且将其设置到map中
      * <p>If the function returns {@code null} no mapping is recorded. If
      * the function itself throws an (unchecked) exception, the
      * exception is rethrown, and no mapping is recorded.  The most
@@ -915,7 +935,7 @@ public interface Map<K,V> {
      * @implSpec
      * The default implementation is equivalent to the following steps for this
      * {@code map}, then returning the current value or {@code null} if now
-     * absent:
+     * absent: 该方法的等价实现如下：
      *
      * <pre> {@code
      * if (map.get(key) == null) {
@@ -966,16 +986,16 @@ public interface Map<K,V> {
     /**
      * If the value for the specified key is present and non-null, attempts to
      * compute a new mapping given the key and its current mapped value.
-     *
+     * 如果指定key值的对应value存在且不为null，则用key和value计算出新value。
      * <p>If the function returns {@code null}, the mapping is removed.  If the
      * function itself throws an (unchecked) exception, the exception is
      * rethrown, and the current mapping is left unchanged.
-    *
+    *  如果计算算法返回值为null，则移除该映射。
      * @implSpec
      * The default implementation is equivalent to performing the following
      * steps for this {@code map}, then returning the current value or
      * {@code null} if now absent:
-     *
+     * 该方法的等价实现如下：
      * <pre> {@code
      * if (map.get(key) != null) {
      *     V oldValue = map.get(key);
@@ -1032,7 +1052,8 @@ public interface Map<K,V> {
      * mapped value (or {@code null} if there is no current mapping). For
      * example, to either create or append a {@code String} msg to a value
      * mapping:
-     *
+     * 尝试用指定key和当前映射的value值计算新value值。例如，去新建或者增加String类型
+     * 的信息给value值。如下：
      * <pre> {@code
      * map.compute(key, (k, v) -> (v == null) ? msg : v.concat(msg))}</pre>
      * (Method {@link #merge merge()} is often simpler to use for such purposes.)
@@ -1045,7 +1066,7 @@ public interface Map<K,V> {
      * @implSpec
      * The default implementation is equivalent to performing the following
      * steps for this {@code map}, then returning the current value or
-     * {@code null} if absent:
+     * {@code null} if absent: 该方法等价如下：
      *
      * <pre> {@code
      * V oldValue = map.get(key);
@@ -1116,7 +1137,7 @@ public interface Map<K,V> {
      * method may be of use when combining multiple mapped values for a key.
      * For example, to either create or append a {@code String msg} to a
      * value mapping:
-     *
+     * （翻译这么多有时真不如直接看代码）
      * <pre> {@code
      * map.merge(key, msg, String::concat)
      * }</pre>
@@ -1128,7 +1149,7 @@ public interface Map<K,V> {
      * @implSpec
      * The default implementation is equivalent to performing the following
      * steps for this {@code map}, then returning the current value or
-     * {@code null} if absent:
+     * {@code null} if absent: 该方法等价试下如下：
      *
      * <pre> {@code
      * V oldValue = map.get(key);
